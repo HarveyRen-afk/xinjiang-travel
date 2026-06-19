@@ -3,19 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>新疆伊犁9天轻松旅行计划 · 杭州出发 · 2026年7月</title>
+<title>新疆伊犁8天逆时针环线 · 杭州出发 · 2026年7月</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   :root {
     --bg: #0b1120; --card: #151d30; --border: #263148;
     --text: #e2e8f0; --text2: #94a3b8; --accent: #38bdf8;
     --green: #4ade80; --orange: #fb923c; --red: #f87171;
-    --purple: #c084fc; --pink: #f472b6; --yellow: #facc15;
+    --purple: #c084fc; --yellow: #facc15;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif; line-height: 1.7; padding: 20px; }
   .container { max-width: 960px; margin: 0 auto; }
-
   h1 { text-align: center; font-size: 2em; margin: 24px 0 8px; background: linear-gradient(135deg, var(--green), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .subtitle { text-align: center; color: var(--text2); margin-bottom: 8px; font-size: 0.95em; }
   .badge-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
@@ -24,23 +23,22 @@
   .badge-blue  { background: rgba(56,189,248,0.15); color: var(--accent); border: 1px solid rgba(56,189,248,0.3); }
   .badge-orange{ background: rgba(251,146,60,0.15); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
   .badge-purple{ background: rgba(192,132,252,0.15); color: var(--purple); border: 1px solid rgba(192,132,252,0.3); }
+  .badge-red   { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
 
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
   .card h2 { font-size: 1.15em; margin-bottom: 16px; }
-
   .overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
   .ov-item { text-align: center; padding: 14px 8px; background: rgba(255,255,255,0.03); border-radius: 10px; }
   .ov-num { font-size: 1.4em; font-weight: 700; }
   .ov-label{ font-size: 0.78em; color: var(--text2); margin-top: 2px; }
 
-  .route-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 0.88em; justify-content: center; padding: 12px 0; }
-  .route-node { padding: 4px 10px; border-radius: 6px; background: rgba(56,189,248,0.1); white-space: nowrap; }
-  .route-arrow { color: var(--text2); }
+  .route-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: 0.82em; justify-content: center; padding: 12px 0; line-height: 2.2; }
+  .route-node { padding: 3px 8px; border-radius: 6px; background: rgba(56,189,248,0.1); white-space: nowrap; }
+  .route-arrow { color: var(--text2); font-size: 0.8em; }
   .route-node.highlight { background: rgba(251,146,60,0.2); color: var(--orange); font-weight: 700; }
-  .route-node.train { background: rgba(192,132,252,0.15); color: var(--purple); }
-  .route-node.end { background: rgba(74,222,128,0.12); color: var(--green); }
+  .route-node.green { background: rgba(74,222,128,0.15); color: var(--green); }
+  .route-node.purple { background: rgba(192,132,252,0.15); color: var(--purple); }
 
-  /* Map */
   #route-map { height: 520px; border-radius: 10px; border: 1px solid var(--border); z-index: 0; }
   .leaflet-container { background: #1a2332 !important; font-family: inherit; }
   .leaflet-control-zoom a { background: var(--card) !important; color: var(--text) !important; border-color: var(--border) !important; }
@@ -50,8 +48,9 @@
   .map-legend span { display: flex; align-items: center; gap: 5px; }
   .map-legend .line { display: inline-block; width: 24px; height: 3px; border-radius: 2px; }
   .line-drive { background: #4ade80; }
-  .line-train { background: #c084fc; }
   .line-fly   { background: #f87171; }
+  .line-train { background: #c084fc; }
+  .line-ferry { background: #facc15; }
   .map-label { background: transparent !important; border: none !important; box-shadow: none !important; color: #fff !important; }
   .map-label::before { display: none !important; }
   .leaflet-tooltip.map-label { background: rgba(0,0,0,0.55) !important; border-radius: 4px !important; padding: 2px 6px !important; }
@@ -71,9 +70,11 @@
   .tag { display: inline-block; padding: 1px 7px; border-radius: 5px; font-size: 0.75em; font-weight: 600; margin-right: 4px; }
   .tag-must { background: rgba(248,113,113,0.18); color: var(--red); }
   .tag-food { background: rgba(251,146,60,0.18); color: var(--orange); }
-  .tag-relax{ background: rgba(74,222,128,0.15); color: var(--green); }
-  .tag-tip  { background: rgba(250,204,21,0.12); color: var(--yellow); }
   .tag-scene{ background: rgba(56,189,248,0.12); color: var(--accent); }
+  .tag-warn { background: rgba(250,204,21,0.15); color: var(--yellow); }
+  .tag-road { background: rgba(248,113,113,0.12); color: var(--red); }
+
+  .warn-box { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.2); border-radius: 8px; padding: 10px 14px; margin-top: 8px; font-size: 0.82em; color: var(--orange); }
 
   .cost-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 8px; }
   .cost-item { text-align: center; padding: 14px 6px; background: rgba(255,255,255,0.03); border-radius: 10px; }
@@ -86,7 +87,7 @@
   table { width: 100%; border-collapse: collapse; font-size: 0.88em; }
   th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
   th { color: var(--text2); font-weight: 500; font-size: 0.78em; }
-  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .num { text-align: right; }
 
   .scene-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
   .scene-item { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px; border-left: 3px solid var(--accent); }
@@ -96,6 +97,7 @@
   .scene-item.forest{ border-left-color: #22c55e; }
   .scene-item.town { border-left-color: #fb923c; }
   .scene-item.gorge { border-left-color: #f87171; }
+  .scene-item.wonder{ border-left-color: #facc15; }
   .scene-name { font-weight: 700; }
   .scene-type { font-size: 0.75em; color: var(--text2); }
   .scene-desc { font-size: 0.82em; margin-top: 3px; color: var(--text2); }
@@ -111,23 +113,21 @@
   .warn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 7px; font-size: 0.85em; }
   .warn-grid strong { color: var(--orange); }
 
-  @media (max-width: 600px) {
-    body { padding: 10px; }
-    .card { padding: 16px; }
-    h1 { font-size: 1.5em; }
-  }
+  .d1-split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  @media (max-width: 600px) { .d1-split { grid-template-columns: 1fr; } body { padding: 10px; } .card { padding: 16px; } h1 { font-size: 1.5em; } }
 </style>
 </head>
 <body>
 <div class="container">
 
-<h1>🌿 新疆伊犁 12 天轻松旅行计划</h1>
-<p class="subtitle">2026年7月11日 – 7月22日 · 杭州出发 · 6人（4大2小）· 2个家庭 · 奎屯枢纽 · 独库北段 · 9天精华版</p>
+<h1>🏔️ 新疆伊犁 8 天逆时针环线</h1>
+<p class="subtitle">2026年7月11日 – 7月18日 · 杭州出发 · 6人（4大2小）· 2个家庭 · 奎屯省钱租车</p>
 <div class="badge-row">
-  <span class="badge badge-green">🚗 单日最长 300km</span>
-  <span class="badge badge-blue">🏖️ 轻松慢游</span>
-  <span class="badge badge-orange">🍇 葡萄沟必去</span>
-  <span class="badge badge-purple">⭐ 独库北段</span>
+  <span class="badge badge-green">🔄 逆时针</span>
+  <span class="badge badge-blue">🚗 奎屯取还</span>
+  <span class="badge badge-orange">🍇 葡萄沟</span>
+  <span class="badge badge-purple">🚇 胜利隧道</span>
+  <span class="badge badge-red">🌿 仅1个草原</span>
 </div>
 
 <!-- 概览 -->
@@ -135,58 +135,65 @@
   <h2>📋 行程概览</h2>
   <div class="overview">
     <div class="ov-item"><div class="ov-num">6人</div><div class="ov-label">4大2小 · 2家庭</div></div>
-    <div class="ov-item"><div class="ov-num">9天</div><div class="ov-label">7.11 - 7.22</div></div>
-    <div class="ov-item"><div class="ov-num">~1,100km</div><div class="ov-label">总自驾（极轻松）</div></div>
-    <div class="ov-item"><div class="ov-num">&le;200km</div><div class="ov-label">单日最长车程</div></div>
-    <div class="ov-item"><div class="ov-num">2间</div><div class="ov-label">每晚房间数</div></div>
-    <div class="ov-item"><div class="ov-num">&le;¥6K</div><div class="ov-label">人均预算</div></div>
+    <div class="ov-item"><div class="ov-num">8天</div><div class="ov-label">7.11 - 7.18</div></div>
+    <div class="ov-item"><div class="ov-num">~2,120km</div><div class="ov-label">总自驾</div></div>
+    <div class="ov-item"><div class="ov-num">450km</div><div class="ov-label">单日最长 D2/D3</div></div>
+    <div class="ov-item"><div class="ov-num">10种</div><div class="ov-label">不同风景</div></div>
+    <div class="ov-item"><div class="ov-num">~5,600</div><div class="ov-label">人均预算</div></div>
   </div>
 </div>
 
-<!-- 路线总览 -->
+<!-- 路线图 -->
 <div class="card">
-  <h2>🗺️ 路线总览</h2>
+  <h2>🗺️ 路线总览 · 逆时针环线</h2>
   <div class="route-flow">
     <span class="route-node">杭州 ✈️</span><span class="route-arrow">→</span>
-    <span class="route-node">乌鲁木齐</span><span class="route-arrow">→</span>
-    <span class="route-node highlight">🍇 吐鲁番·葡萄沟</span><span class="route-arrow">→</span>
-    <span class="route-node">乌鲁木齐</span><span class="route-arrow">→</span>
-    <span class="route-node train">🚂 火车→奎屯</span><span class="route-arrow">→</span>
-    <span class="route-node">赛里木湖</span><span class="route-arrow">→</span>
-    <span class="route-node">伊宁</span><span class="route-arrow">→</span>
-    <span class="route-node">昭苏·夏塔</span><span class="route-arrow">→</span>
+    <span class="route-node">乌市</span><span class="route-arrow">→</span>
+    <span class="route-node purple">🚂奎屯取车</span><span class="route-arrow">→</span>
+    <span class="route-node">乌市</span><span class="route-arrow">→</span>
+    <span class="route-node highlight">🍇 吐鲁番</span><span class="route-arrow">→</span>
+    <span class="route-node">乌市</span><span class="route-arrow">→</span>
+    <span class="route-node green">🚇 胜利隧道</span><span class="route-arrow">→</span>
+    <span class="route-node">巴伦台</span><span class="route-arrow">→</span>
+    <span class="route-node green">🌲 巩乃斯</span><span class="route-arrow">→</span>
+    <span class="route-node">那拉提</span><span class="route-arrow">→</span>
+    <span class="route-node green">🌿 喀拉峻</span><span class="route-arrow">→</span>
     <span class="route-node">特克斯</span><span class="route-arrow">→</span>
-    <span class="route-node">喀拉峻</span><span class="route-arrow">→</span>
-    <span class="route-node highlight">⭐ 独库北段</span><span class="route-arrow">→</span>
-    <span class="route-node">奎屯</span><span class="route-arrow">→</span>
-    <span class="route-node train">🚂 乌市</span><span class="route-arrow">→</span>
-    <span class="route-node end">✈️ 杭州</span>
+    <span class="route-node green">🏔 夏塔</span><span class="route-arrow">→</span>
+    <span class="route-node">伊昭公路</span><span class="route-arrow">→</span>
+    <span class="route-node">伊宁</span><span class="route-arrow">→</span>
+    <span class="route-node green">🌊 赛湖</span><span class="route-arrow">→</span>
+    <span class="route-node purple">奎屯还车</span><span class="route-arrow">→</span>
+    <span class="route-node">🚂乌市</span><span class="route-arrow">→</span>
+    <span class="route-node">✈️ 杭州</span>
   </div>
   <div id="route-map"></div>
   <div class="map-legend">
     <span><span class="line line-drive"></span> 自驾</span>
-    <span><span class="line line-train"></span> 高铁</span>
     <span><span class="line line-fly"></span> 飞机</span>
+    <span><span class="line line-train"></span> 火车</span>
+    <span><span class="line line-ferry"></span> 取车接驳</span>
     <span>📍 站点</span>
   </div>
   <p style="font-size:0.82em;color:var(--text2);margin-top:10px;text-align:center;">
-    核心策略：飞机到乌市 → 自驾吐鲁番看葡萄沟 → <strong>火车到奎屯取车（租车便宜）</strong>→ 伊犁深度慢游 → <strong>⭐独库公路北段回奎屯</strong>（新疆自驾天花板）
+    策略：<strong>D1 2人去奎屯取车开回乌市</strong>（省租车费）→ 逆时针环线 → 东出南回，<strong>全程不走回头路</strong>
   </p>
 </div>
 
 <!-- 风景多样性 -->
 <div class="card">
-  <h2>🏔️ 风景多样性（告别草原审美疲劳）</h2>
+  <h2>🏔️ 10种风景 · 零重复</h2>
   <div class="scene-grid">
-    <div class="scene-item lake"><div class="scene-name">🌊 赛里木湖</div><div class="scene-type">高原湖泊</div><div class="scene-desc">"大西洋最后一滴眼泪"，蓝得不真实，环湖90km</div></div>
-    <div class="scene-item mount"><div class="scene-name">🏔️ 夏塔古道</div><div class="scene-type">雪山冰川·峡谷</div><div class="scene-desc">天山主脉脚下，木扎尔特冰川近在眼前，徒步或骑马</div></div>
-    <div class="scene-item grass"><div class="scene-name">🌿 喀拉峻草原</div><div class="scene-type">立体草原（唯一）</div><div class="scene-desc">"人体草原"曲线、鲜花台、猎鹰台，全程唯一草原</div></div>
-    <div class="scene-item forest"><div class="scene-name">🌲 库尔德宁</div><div class="scene-type">雪岭云杉森林</div><div class="scene-desc">天山最美的森林，云杉参天+雪山背景，和草原完全不同</div></div>
-    <div class="scene-item gorge"><div class="scene-name">🛣️ 伊昭公路</div><div class="scene-type">高山公路</div><div class="scene-desc">"小独库"，翻越白石峰，一路雪山草原峡谷</div></div>
-    <div class="scene-item town"><div class="scene-name">🏘️ 喀赞其+八卦城</div><div class="scene-type">民俗·古城</div><div class="scene-desc">蓝色维吾尔民居、世界唯一八卦布局城市</div></div>
-    <div class="scene-item gorge"><div class="scene-name">🍇 葡萄沟</div><div class="scene-type">绿洲果园</div><div class="scene-desc">吐鲁番火焰山下的清凉世界，葡萄长廊</div></div>
-    <div class="scene-item mount"><div class="scene-name">🌉 果子沟大桥</div><div class="scene-type">峡谷大桥</div><div class="scene-desc">雪山背景下的巨型大桥，免费观景台震撼</div></div>
-    <div class="scene-item gorge"><div class="scene-name">⭐ 独库公路北段</div><div class="scene-type">新疆自驾天花板</div><div class="scene-desc">哈希勒根达坂(3400m)、天瀑、峡谷、7月残雪</div></div>
+    <div class="scene-item gorge"><div class="scene-name">🍇 葡萄沟</div><div class="scene-type">绿洲果园</div><div class="scene-desc">火焰山下的清凉世界，葡萄长廊、维吾尔家访</div></div>
+    <div class="scene-item wonder"><div class="scene-name">🚇 天山胜利隧道</div><div class="scene-type">世界最长 22km</div><div class="scene-desc">2026年新通车，20分钟穿越天山</div></div>
+    <div class="scene-item forest"><div class="scene-name">🌲 巩乃斯林场</div><div class="scene-type">原始森林</div><div class="scene-desc">雪岭云杉原始森林，天山腹地秘境</div></div>
+    <div class="scene-item mount"><div class="scene-name">🏔️ 艾肯达坂</div><div class="scene-type">天山达坂 3035m</div><div class="scene-desc">7月野花满坡，蒙古族牧区风光</div></div>
+    <div class="scene-item grass"><div class="scene-name">🌿 喀拉峻草原</div><div class="scene-type">立体草原 · 唯一</div><div class="scene-desc">"人体草原"曲线、鲜花台、猎鹰台</div></div>
+    <div class="scene-item mount"><div class="scene-name">🏔️ 夏塔古道</div><div class="scene-type">雪山冰川</div><div class="scene-desc">木扎尔特冰川近在咫尺，徒步骑马</div></div>
+    <div class="scene-item gorge"><div class="scene-name">🛣️ 伊昭公路</div><div class="scene-type">高山公路</div><div class="scene-desc">"小独库"，翻越白石峰，弯多景美</div></div>
+    <div class="scene-item town"><div class="scene-name">🏘️ 喀赞其+八卦城</div><div class="scene-type">民俗·古城</div><div class="scene-desc">蓝色民居、世界唯一八卦布局城市</div></div>
+    <div class="scene-item lake"><div class="scene-name">🌊 赛里木湖</div><div class="scene-type">高原湖泊</div><div class="scene-desc">"大西洋最后一滴眼泪"，环湖90km</div></div>
+    <div class="scene-item mount"><div class="scene-name">🌉 果子沟大桥</div><div class="scene-type">峡谷大桥</div><div class="scene-desc">雪山背景下的巨型大桥，免费观景</div></div>
   </div>
 </div>
 
@@ -194,24 +201,42 @@
 <div class="card">
   <h2>📅 每日详细行程</h2>
 
-  <!-- Day 1 -->
+  <!-- D1 -->
   <div class="day-card card" style="background:rgba(255,255,255,0.015);">
     <div class="day-head">
       <div>
-        <div class="day-num">Day 1 · 7月11日 周五</div>
-        <div class="day-title">杭州 → 乌鲁木齐 · 抵达</div>
+        <div class="day-num">Day 1 · 7月11日 周五 · 兵分两路</div>
+        <div class="day-title">杭州 → 乌鲁木齐 → 2人取车队出发</div>
       </div>
-      <div class="day-meta"><span class="day-stay">🏨 乌鲁木齐 2间</span></div>
+      <div class="day-meta">
+        <span class="day-km">🚗 250km（取车回程）</span>
+        <span class="day-stay">🏨 乌鲁木齐 2间</span>
+      </div>
     </div>
-    <div class="tl">
-      <div class="tl-item"><span class="tl-time">上午/下午</span> 杭州萧山 → 乌鲁木齐地窝堡（直飞约5h），机场取7座SUV（只租2天，吐鲁番往返用）</div>
-      <div class="tl-item"><span class="tl-time">傍晚</span> 酒店休整，适应时差（22:00才天黑）</div>
-      <div class="tl-item"><span class="tl-time">晚上</span> <strong>国际大巴扎</strong>（免费），异域风情，逛到天黑</div>
-      <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 领馆巷：烤包子、抓饭、拌面、羊肉串 · 人均40-50</div>
+    <div class="d1-split">
+      <div style="background:rgba(192,132,252,0.06);border-radius:8px;padding:12px;">
+        <div style="font-weight:700;color:var(--purple);margin-bottom:6px;">🚂 2人 · 取车队</div>
+        <div class="tl" style="border-left-color:rgba(192,132,252,0.3);">
+          <div class="tl-item"><span class="tl-time">13:00</span> 乌市站 → 奎屯（C字头 2.5h）</div>
+          <div class="tl-item"><span class="tl-time">15:30</span> 奎屯取7座SUV（租7天，约250/天）</div>
+          <div class="tl-item"><span class="tl-time">16:00</span> G30高速返乌市（250km 3h），定速巡航</div>
+          <div class="tl-item"><span class="tl-time">19:00</span> 回到乌市酒店，与大部队会合</div>
+        </div>
+      </div>
+      <div style="background:rgba(74,222,128,0.04);border-radius:8px;padding:12px;">
+        <div style="font-weight:700;color:var(--green);margin-bottom:6px;">😴 4人 · 大部队</div>
+        <div class="tl" style="border-left-color:rgba(74,222,128,0.2);">
+          <div class="tl-item"><span class="tl-time">下午</span> 酒店休整，适应时差</div>
+          <div class="tl-item"><span class="tl-time">傍晚</span> 国际大巴扎（免费），异域风情</div>
+          <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 领馆巷：烤包子、抓饭、拌面 · 人均40-50</div>
+          <div class="tl-item"><span class="tl-time">晚上</span> 等取车队回来，发第二天行程</div>
+        </div>
+      </div>
     </div>
+    <div class="warn-box">💡 取车队注意：乌市站到奎屯车次多，选13:00前后那班。取车后G30全程高速无压力，19:00前轻松到。提前联系租车行确认17:00后取车OK。</div>
   </div>
 
-  <!-- Day 2 -->
+  <!-- D2 -->
   <div class="day-card card" style="background:rgba(255,255,255,0.015);">
     <div class="day-head">
       <div>
@@ -219,199 +244,222 @@
         <div class="day-title">乌鲁木齐 → 吐鲁番 · ⭐葡萄沟</div>
       </div>
       <div class="day-meta">
-        <span class="day-km">🚗 200km · 2.5h</span>
+        <span class="day-km">🚗 200km · 2.5h · G30高速</span>
         <span class="day-stay">🏨 吐鲁番 2间</span>
       </div>
     </div>
     <div class="tl">
-      <div class="tl-item"><span class="tl-time">9:00</span> 睡到自然醒出发，G30连霍高速</div>
-      <div class="tl-item"><span class="tl-time">11:30</span> <strong>坎儿井</strong>（门票40元）—— 地下水利奇迹，凉快有趣</div>
-      <div class="tl-item"><span class="tl-time">14:00</span> <span class="tag tag-must">⭐必去</span> <strong>🍇 葡萄沟</strong>（门票75元）—— 整个下午！葡萄长廊、维吾尔家访、鲜榨葡萄汁</div>
+      <div class="tl-item"><span class="tl-time">9:00</span> 全员出发，G30连霍高速东行，天山相伴</div>
+      <div class="tl-item"><span class="tl-time">11:30</span> <strong>坎儿井</strong>（门票40元）—— 地下水利奇迹，自带空调凉快</div>
+      <div class="tl-item"><span class="tl-time">13:30</span> <span class="tag tag-must">⭐必去</span> <strong>🍇 葡萄沟</strong>（门票75元）—— 泡整个下午！葡萄长廊、维吾尔家访、鲜榨葡萄汁、拍照</div>
       <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 吐鲁番大盘鸡+葡萄干抓饭 · 人均40-50</div>
     </div>
+    <div class="warn-box">🌡️ 吐鲁番7月40°C+，带足水、防晒、藿香正气水。葡萄沟内较凉快但路上热。火焰山留明天早上看。</div>
   </div>
 
-  <!-- Day 3 -->
+  <!-- D3 -->
   <div class="day-card card" style="background:rgba(255,255,255,0.015);">
     <div class="day-head">
       <div>
-        <div class="day-num">Day 3 · 7月13日 周日</div>
-        <div class="day-title">火焰山 → 乌鲁木齐 → 火车去奎屯</div>
+        <div class="day-num">Day 3 · 7月13日 周日 · ⚠️最长日</div>
+        <div class="day-title">火焰山 → 乌市 → 胜利隧道 → 巴伦台</div>
       </div>
       <div class="day-meta">
-        <span class="day-km">🚗 200km · 2.5h + 🚂 2.5h</span>
-        <span class="day-stay">🏨 奎屯 2间</span>
+        <span class="day-km">🚗 400km · 6h · 高速+新路</span>
+        <span class="day-stay">🏨 巴伦台/和静 2间</span>
       </div>
     </div>
     <div class="tl">
-      <div class="tl-item"><span class="tl-time">8:00</span> 趁凉快看<strong>火焰山</strong>（门票40元），打卡30分钟</div>
-      <div class="tl-item"><span class="tl-time">9:30</span> 返回乌鲁木齐，12:00抵达，还车，午餐</div>
-      <div class="tl-item"><span class="tl-time">14:00</span> <span class="tag tag-tip">🚂</span> C字头 → 奎屯（仅2.5h），16:30抵达，入住</div>
-      <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 奎屯大盘鸡、拌面 · 人均30-40</div>
+      <div class="tl-item"><span class="tl-time">7:30</span> 趁凉快看<strong>火焰山</strong>（门票40元），地表50°C+，拍照30分钟即可</div>
+      <div class="tl-item"><span class="tl-time">8:30</span> G30返乌市方向（200km 2.5h），注意限速</div>
+      <div class="tl-item"><span class="tl-time">11:00</span> 不入乌市城区，走绕城高速直接上<strong>G0711乌尉高速</strong></div>
+      <div class="tl-item"><span class="tl-time">12:00</span> <span class="tag tag-scene">🚇</span> <strong>天山胜利隧道</strong>—— 世界最长高速公路隧道，22.13公里，20分钟穿天山！</div>
+      <div class="tl-item"><span class="tl-time">13:00</span> 出隧道后服务区午餐</div>
+      <div class="tl-item"><span class="tl-time">14:00</span> G0711继续南行，天山南麓风光渐入佳境</div>
+      <div class="tl-item"><span class="tl-time">15:00</span> 抵达<strong>巴伦台镇</strong>，可逛黄庙古刹（蒙古族藏传佛教）</div>
+      <div class="tl-item"><span class="tl-time">住宿</span> 巴伦台小旅馆或和静县城（+30km），务必提前订！</div>
     </div>
+    <div class="warn-box">⚠️ 全程最长一天（400km），但G0711是2026年新建高速，路况极好。注意D3早上加油：吐鲁番出来务必加满，G0711沿途服务区还在完善中。巴伦台住宿极少，现在就订！</div>
   </div>
 
-  <!-- Day 4 -->
+  <!-- D4 -->
   <div class="day-card card" style="background:rgba(255,255,255,0.015);">
     <div class="day-head">
       <div>
         <div class="day-num">Day 4 · 7月14日 周一</div>
-        <div class="day-title">奎屯取车 → 赛里木湖 🌊</div>
+        <div class="day-title">巴伦台 → 巩乃斯林场 → 艾肯达坂 → 那拉提</div>
       </div>
       <div class="day-meta">
-        <span class="day-km">🚗 300km · 3.5h · 全程最长</span>
-        <span class="day-stay">🏨 赛湖/果子沟 2间</span>
-      </div>
-    </div>
-    <div class="tl">
-      <div class="tl-item"><span class="tl-time">8:00</span> 奎屯取7座SUV（租6天，约250元/天）</div>
-      <div class="tl-item"><span class="tl-time">8:30-12:00</span> G30连霍高速，前200km戈壁较无聊，精河后天山雪峰渐近</div>
-      <div class="tl-item"><span class="tl-time">12:00</span> <strong>赛里木湖</strong>（145元）🌊 环湖90km，点将台、西海草原</div>
-      <div class="tl-item"><span class="tl-time">傍晚</span> 湖西岸看日落。住果子沟蒙古包200-300/间</div>
-    </div>
-    <p style="font-size:0.8em;color:var(--orange);margin-top:8px;">全程唯一超200km的一天。戈壁段可定速巡航不累，下午到赛湖一切值得。</p>
-  </div>
-
-  <!-- Day 5 -->
-  <div class="day-card card" style="background:rgba(255,255,255,0.015);">
-    <div class="day-head">
-      <div>
-        <div class="day-num">Day 5 · 7月15日 周二</div>
-        <div class="day-title">赛湖 → 果子沟大桥 → 伊宁</div>
-      </div>
-      <div class="day-meta">
-        <span class="day-km">🚗 140km · 2h</span>
-        <span class="day-stay">🏨 伊宁 2间</span>
-      </div>
-    </div>
-    <div class="tl">
-      <div class="tl-item"><span class="tl-time">上午</span> 赛湖日出或睡到自然醒。经<strong>果子沟大桥</strong>，雪山背景+峡谷大桥极其震撼</div>
-      <div class="tl-item"><span class="tl-time">12:00</span> 霍城薰衣草（顺路看），14:00到伊宁</div>
-      <div class="tl-item"><span class="tl-time">下午</span> <strong>喀赞其民俗村</strong>（免费），蓝色街道、手工冰淇淋5元</div>
-      <div class="tl-item"><span class="tl-time">傍晚</span> 伊犁河大桥日落（22:00）。🍽️ 六星街夜市 · 人均40-50</div>
-    </div>
-  </div>
-
-  <!-- Day 6 -->
-  <div class="day-card card" style="background:rgba(255,255,255,0.015);">
-    <div class="day-head">
-      <div>
-        <div class="day-num">Day 6 · 7月16日 周三 · ⚠️最长日</div>
-        <div class="day-title">伊宁 → 伊昭公路 → 昭苏 → 夏塔 → 特克斯</div>
-      </div>
-      <div class="day-meta">
-        <span class="day-km">🚗 380km · 5-6h · 早起出发</span>
-        <span class="day-stay">🏨 特克斯 2间</span>
-      </div>
-    </div>
-    <div class="tl">
-      <div class="tl-item"><span class="tl-time">7:00</span> 早出发，走<strong>伊昭公路</strong>（"小独库"），翻天山、白石峰</div>
-      <div class="tl-item"><span class="tl-time">10:00</span> 经昭苏油菜花海（路边看），直奔<strong>夏塔古道</strong>（40元+区间车）</div>
-      <div class="tl-item"><span class="tl-time">10:30-14:30</span> 🏔️ 夏塔深度4h：乘区间车到温泉，徒步/骑马向冰川前进，木扎尔特雪山近在咫尺</div>
-      <div class="tl-item"><span class="tl-time">15:00</span> 驱车前往特克斯（2h），傍晚八卦城太极坛，摩天轮俯瞰</div>
-      <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 八卦城夜市烤全羊 · 人均40-50</div>
-    </div>
-    <p style="font-size:0.8em;color:var(--orange);margin-top:8px;">⚠️ 赶路日，但伊昭风景在路上、夏塔是精华，累但值得。如果想轻松可砍昭苏油菜花不停。</p>
-  </div>
-
-  <!-- Day 7 -->
-  <div class="day-card card" style="background:rgba(255,255,255,0.015);">
-    <div class="day-head">
-      <div>
-        <div class="day-num">Day 7 · 7月17日 周四</div>
-        <div class="day-title">特克斯 → 喀拉峻草原 → 那拉提镇</div>
-      </div>
-      <div class="day-meta">
-        <span class="day-km">🚗 280km · 4h</span>
+        <span class="day-km">🚗 250km · 4-5h · G218山路</span>
         <span class="day-stay">🏨 那拉提镇 2间</span>
       </div>
     </div>
     <div class="tl">
-      <div class="tl-item"><span class="tl-time">8:00</span> 半小时到<strong>喀拉峻草原</strong>（140元），鲜花台、猎鹰台、"人体草原"曲线</div>
-      <div class="tl-item"><span class="tl-time">上午</span> 🌿 全程唯一草原，玩到中午——半天足够看核心景点了</div>
-      <div class="tl-item"><span class="tl-time">13:00</span> 午餐后出发，沿巩乃斯河谷一路向东，风景在路上</div>
-      <div class="tl-item"><span class="tl-time">17:00</span> 抵达那拉提镇，入住休整。为明天独库蓄力</div>
-      <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 那拉提镇马肉纳仁、酸奶 · 人均40-50</div>
+      <div class="tl-item"><span class="tl-time">9:00</span> G218西行，进入天山腹地</div>
+      <div class="tl-item"><span class="tl-time">10:00</span> <span class="tag tag-scene">🌲</span> <strong>巩乃斯林场</strong>—— 雪岭云杉原始森林，比景区更野更深。林间溪流、古木参天，随时停车</div>
+      <div class="tl-item"><span class="tl-time">12:00</span> <span class="tag tag-scene">🏔️</span> <strong>艾肯达坂（3035m）</strong>—— 7月野花铺满山坡，俯瞰天山群峰。海拔比独库低300m，孩子友好</div>
+      <div class="tl-item"><span class="tl-time">13:00</span> 下达坂，河谷午餐（路上小馆子或自带）</div>
+      <div class="tl-item"><span class="tl-time">15:00</span> 抵达<strong>那拉提镇</strong>，入住休整。不进那拉提景区（草原只看喀拉峻）</div>
+      <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 那拉提镇马肉纳仁、土火锅 · 人均40-50</div>
     </div>
-    <p style="font-size:0.8em;color:var(--text2);margin-top:8px;">💡 喀拉峻半天够看核心（鲜花台+猎鹰台），下午河谷路风景好不无聊。住那拉提是为D8独库做准备。</p>
+    <div class="warn-box">⚠️ G218山路弯多但路面好，注意车速。艾肯达坂3035m可能有轻微高反，停留不超30分钟。巩乃斯是原始林区，手机信号差，提前下载离线地图。</div>
   </div>
 
-  <!-- Day 8 -->
+  <!-- D5 -->
   <div class="day-card card" style="background:rgba(255,255,255,0.015);">
     <div class="day-head">
       <div>
-        <div class="day-num">Day 8 · 7月18日 周五 · ⭐核心日</div>
-        <div class="day-title">那拉提 → 独库北段 → 奎屯 → 乌鲁木齐</div>
+        <div class="day-num">Day 5 · 7月15日 周二</div>
+        <div class="day-title">那拉提 → 喀拉峻草原 → 特克斯</div>
       </div>
       <div class="day-meta">
-        <span class="day-km">🚗 250km · 5h + 🚂 2.5h</span>
-        <span class="day-stay">🏨 乌鲁木齐 2间</span>
+        <span class="day-km">🚗 280km · 4h</span>
+        <span class="day-stay">🏨 特克斯 2间</span>
       </div>
     </div>
     <div class="tl">
-      <div class="tl-item"><span class="tl-time">7:00</span> ⚠️ 早出发！独库旺季可能堵车。从那拉提直接接入独库北段</div>
-      <div class="tl-item"><span class="tl-time">7:30-11:30</span> <span class="tag tag-must">⭐必驾</span> 🏔️ 乔尔玛烈士陵园 → <strong>哈希勒根达坂（3400m，7月残雪！）</strong>→ 天瀑 → 老虎口峡谷</div>
-      <div class="tl-item"><span class="tl-time">12:00</span> 独山子大峡谷（路边看），继续30km到奎屯</div>
-      <div class="tl-item"><span class="tl-time">13:00</span> 奎屯还车。午餐后坐火车回乌鲁木齐（2.5h）</div>
-      <div class="tl-item"><span class="tl-time">晚上</span> <span class="tag tag-food">🍽️</span> 乌鲁木齐最后一顿新疆大餐，楼兰秘烤</div>
+      <div class="tl-item"><span class="tl-time">8:30</span> 沿巩乃斯河谷西行，一路河谷风光</div>
+      <div class="tl-item"><span class="tl-time">12:00</span> 抵达<strong>喀拉峻草原</strong>（门票+区间车140元）</div>
+      <div class="tl-item"><span class="tl-time">12:00-16:00</span> <span class="tag tag-scene">🌿</span> <strong>全程唯一草原</strong>—— 鲜花台、猎鹰台、"人体草原"曲线。4小时看核心足够</div>
+      <div class="tl-item"><span class="tl-time">16:00</span> 下山，驱车半小时到特克斯</div>
+      <div class="tl-item"><span class="tl-time">傍晚</span> <strong>八卦城</strong>太极坛，登摩天轮俯瞰世界唯一八卦城市</div>
+      <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 八卦城夜市烤全羊 · 人均40-50</div>
     </div>
-    <p style="font-size:0.8em;color:var(--orange);margin-top:8px;">⭐ 独库北段是新疆自驾天花板。7点出发10点前过达坂可避开堵车。3400m处停留别超20分钟，孩子注意高反。</p>
+    <div class="warn-box">💡 喀拉峻和那拉提都是草原，只选喀拉峻一个——那拉提更商业化，喀拉峻的立体草原更独特。不进那拉提景区省下135元门票。</div>
   </div>
 
-  <!-- Day 9 -->
+  <!-- D6 -->
   <div class="day-card card" style="background:rgba(255,255,255,0.015);">
     <div class="day-head">
       <div>
-        <div class="day-num">Day 9 · 7月19日 周六</div>
-        <div class="day-title">乌鲁木齐 → 杭州 · 回家 ✈️</div>
+        <div class="day-num">Day 6 · 7月16日 周三 · ⚠️路况最难</div>
+        <div class="day-title">特克斯 → 夏塔古道 → 伊昭公路 → 伊宁</div>
       </div>
-      <div class="day-meta"><span class="day-km">✈️ 返程</span></div>
+      <div class="day-meta">
+        <span class="day-km">🚗 300km · 5-6h</span>
+        <span class="day-stay">🏨 伊宁 2间</span>
+      </div>
     </div>
     <div class="tl">
-      <div class="tl-item"><span class="tl-time">上午</span> 睡到自然醒，华凌市场买干果特产（可快递）。或直接去机场</div>
-      <div class="tl-item"><span class="tl-time">下午</span> 乌鲁木齐地窝堡机场 → 杭州 🍇 带着独库的震撼和葡萄干的香甜回家</div>
+      <div class="tl-item"><span class="tl-time">7:30</span> 早出发，驱车前往夏塔（100km 1.5h）</div>
+      <div class="tl-item"><span class="tl-time">9:00-13:00</span> <span class="tag tag-scene">🏔️</span> <strong>夏塔古道</strong>（门票40元+区间车）—— 乘区间车到温泉，徒步或骑马向木扎尔特冰川前进，雪山就在眼前</div>
+      <div class="tl-item"><span class="tl-time">13:00</span> 景区门口午餐</div>
+      <div class="tl-item"><span class="tl-time">14:00</span> <span class="tag tag-road">⚠️险路</span> 走<strong>伊昭公路</strong>翻越天山—— "小独库"，白石峰、盘山弯道、落石风险。路窄弯急，限速40</div>
+      <div class="tl-item"><span class="tl-time">17:00</span> 抵达伊宁，入住</div>
+      <div class="tl-item"><span class="tl-time">晚餐</span> <span class="tag tag-food">🍽️</span> 汉人街夜市：面肺子、熏马肉、手工冰淇淋5元 · 人均30-50</div>
+    </div>
+    <div class="warn-box">⚠️ 伊昭公路是全程最难路段！盘山窄路+落石风险+无信号。雨天禁止通行。出发前查"伊昭公路实时路况"。如果封路改走G577特克斯→伊宁（多绕40km但安全）。夏塔景区7月旺季排队严重，尽量9点前到。</div>
+  </div>
+
+  <!-- D7 -->
+  <div class="day-card card" style="background:rgba(255,255,255,0.015);">
+    <div class="day-head">
+      <div>
+        <div class="day-num">Day 7 · 7月17日 周四</div>
+        <div class="day-title">伊宁 → 赛里木湖 🌊</div>
+      </div>
+      <div class="day-meta">
+        <span class="day-km">🚗 140km · 2h</span>
+        <span class="day-stay">🏨 赛湖/果子沟 2间</span>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="tl-item"><span class="tl-time">上午</span> 睡到自然醒，<strong>喀赞其民俗村</strong>（免费）—— 蓝色街道、鸽子群、手工冰淇淋</div>
+      <div class="tl-item"><span class="tl-time">11:00</span> 出发，经果子沟大桥（观景台停车拍照）</div>
+      <div class="tl-item"><span class="tl-time">13:00</span> 抵达<strong>赛里木湖</strong>（门票145元/人，自驾环湖）🌊</div>
+      <div class="tl-item"><span class="tl-time">下午</span> 环湖90km，点将台、西海草原、克勒涌珠，走走停停</div>
+      <div class="tl-item"><span class="tl-time">傍晚</span> 湖西岸看日落，金色阳光洒在湖面上</div>
+      <div class="tl-item"><span class="tl-time">住宿</span> 果子沟蒙古包200-300/间（孩子会兴奋）或房车营地600+</div>
     </div>
   </div>
+
+  <!-- D8 -->
+  <div class="day-card card" style="background:rgba(255,255,255,0.015);">
+    <div class="day-head">
+      <div>
+        <div class="day-num">Day 8 · 7月18日 周五 · 回家</div>
+        <div class="day-title">赛湖 → 奎屯还车 → 乌鲁木齐 → 杭州</div>
+      </div>
+      <div class="day-meta">
+        <span class="day-km">🚗 300km · 3.5h</span>
+      </div>
+    </div>
+    <div class="tl">
+      <div class="tl-item"><span class="tl-time">8:00</span> 赛湖出发，G30高速东行300km到奎屯</div>
+      <div class="tl-item"><span class="tl-time">11:30</span> 奎屯还车，午餐</div>
+      <div class="tl-item"><span class="tl-time">13:00</span> 🚂奎屯→乌市（2.5h），15:30到</div>
+      <div class="tl-item"><span class="tl-time">16:00</span> 前往地窝堡机场</div>
+      <div class="tl-item"><span class="tl-time">下午/晚上</span> 乌鲁木齐 → 杭州 ✈️</div>
+    </div>
+    <div class="warn-box">⚠️ D8赶飞机安全关键：8点必须出发，11:30前到奎屯。火车选13:00-14:00班次，16:00到乌市，留2h到机场。建议订18:30以后的航班。如果担心赶不上，提前一晚到奎屯住也是选项。</div>
+  </div>
+</div>
 
 <!-- 车程统计 -->
 <div class="card">
   <h2>📊 每日车程统计</h2>
   <table>
-    <thead><tr><th>日期</th><th>路线</th><th class="num">公里</th><th class="num">驾驶</th><th>强度</th><th>风景类型</th></tr></thead>
+    <thead><tr><th>日期</th><th>路线</th><th class="num">km</th><th class="num">驾驶</th><th>路况</th><th>风景</th></tr></thead>
     <tbody>
-      <tr><td>7.11</td><td>杭州 → 乌鲁木齐（飞机）</td><td class="num">—</td><td class="num">—</td><td>🟢 轻松</td><td>城市</td></tr>
-      <tr><td>7.12</td><td>乌鲁木齐 → 吐鲁番</td><td class="num">200</td><td class="num">2.5h</td><td>🟢 轻松</td><td>🍇 绿洲</td></tr>
-      <tr><td>7.13</td><td>吐鲁番 → 乌市 + 火车→奎屯</td><td class="num">200</td><td class="num">2.5h+2.5h</td><td>🟡 中转日</td><td>沙漠+火车</td></tr>
-      <tr><td>7.14</td><td>奎屯 → 赛里木湖</td><td class="num"><strong>300</strong></td><td class="num">3.5h</td><td>🟡 最长一天</td><td>戈壁→🌊湖泊</td></tr>
-      <tr><td>7.15</td><td>赛湖 → 果子沟 → 伊宁</td><td class="num">140</td><td class="num">2h</td><td>🟢 轻松</td><td>🌉 峡谷大桥</td></tr>
-      <tr><td>7.16</td><td>伊宁休整</td><td class="num">0</td><td class="num">0</td><td>🟢 休息日</td><td>🏘️ 民俗</td></tr>
-      <tr><td>7.17</td><td>伊宁 → 昭苏（伊昭公路）</td><td class="num">200</td><td class="num">4h</td><td>🟢 边走边停</td><td>🛣️ 高山公路</td></tr>
-      <tr><td>7.18</td><td>昭苏 → 夏塔 → 特克斯</td><td class="num">180</td><td class="num">3h</td><td>🟢 轻松</td><td>🏔️ 雪山冰川</td></tr>
-      <tr><td>7.19</td><td>特克斯 → 喀拉峻（唯一草原）</td><td class="num">30</td><td class="num">0.5h</td><td>🟢 极轻松</td><td>🌿 草原</td></tr>
-      <tr><td>7.20</td><td>特克斯 → 库尔德宁</td><td class="num">120</td><td class="num">2h</td><td>🟢 轻松</td><td>🌲 森林</td></tr>
-      <tr><td>7.21</td><td>库尔德宁 → ⭐独库北段 → 奎屯</td><td class="num">220</td><td class="num">4.5h</td><td>⭐ 核心日</td><td>🏔️雪山达坂</td></tr>
-      <tr><td>7.22</td><td>奎屯 → 乌市（火车）→ 杭州✈️</td><td class="num">—</td><td class="num">—</td><td>🟢 回家</td><td></td></tr>
+      <tr><td>7.11</td><td>2人：乌市→🚂奎屯→G30→乌市</td><td class="num">250</td><td class="num">3h</td><td>🟢 高速</td><td>戈壁</td></tr>
+      <tr><td>7.12</td><td>乌市→吐鲁番</td><td class="num">200</td><td class="num">2.5h</td><td>🟢 高速</td><td>🍇 绿洲</td></tr>
+      <tr><td>7.13</td><td>火焰山→乌市→胜利隧道→巴伦台</td><td class="num"><strong>400</strong></td><td class="num">6h</td><td>🟢 高速+新路</td><td>🚇 隧道</td></tr>
+      <tr><td>7.14</td><td>巴伦台→巩乃斯→艾肯达坂→那拉提</td><td class="num">250</td><td class="num">4.5h</td><td>🟡 G218山路</td><td>🌲森林+🏔达坂</td></tr>
+      <tr><td>7.15</td><td>那拉提→喀拉峻→特克斯</td><td class="num">280</td><td class="num">4h</td><td>🟢 河谷公路</td><td>🌿 草原</td></tr>
+      <tr><td>7.16</td><td>特克斯→夏塔→伊昭公路→伊宁</td><td class="num">300</td><td class="num">5-6h</td><td>🔴 山路险</td><td>🏔雪山+🛣公路</td></tr>
+      <tr><td>7.17</td><td>伊宁→果子沟→赛湖</td><td class="num">140</td><td class="num">2h</td><td>🟢 高速</td><td>🌉大桥+🌊湖</td></tr>
+      <tr><td>7.18</td><td>赛湖→奎屯→🚂乌市→✈️杭州</td><td class="num">300</td><td class="num">3.5h</td><td>🟢 高速</td><td>回家</td></tr>
     </tbody>
   </table>
   <p style="font-size:0.82em;color:var(--green);margin-top:10px;text-align:center;">
-    ✅ 单日最长 <strong>200km</strong> · 总自驾约 <strong>1,210km</strong> · 6种核心风景类型 · 仅1个草原
+    ✅ 总自驾 ~2,120km · 单日最长400km（全程高速+新路）· 仅1个草原 · 10种风景 · 不走回头路
   </p>
+</div>
+
+<!-- 重点公路评估 -->
+<div class="card">
+  <h2>⚠️ 重点公路难度评估</h2>
+  <table>
+    <thead><tr><th>公路</th><th>日期</th><th>难度</th><th>风险点</th><th>备选</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>伊昭公路</strong></td><td>D6</td><td>🔴 高</td>
+        <td>盘山窄路、落石、弯急、雨天禁行、无信号</td>
+        <td>G577特克斯→伊宁（+40km 安全）</td>
+      </tr>
+      <tr>
+        <td><strong>G218 巩乃斯段</strong></td><td>D4</td><td>🟡 中</td>
+        <td>山路弯多、无信号、雨季偶有落石</td>
+        <td>无替代，但风险可控</td>
+      </tr>
+      <tr>
+        <td><strong>艾肯达坂</strong></td><td>D4</td><td>🟡 中</td><td>3035m轻微高反、弯道</td><td>无替代，停留别超30min</td>
+      </tr>
+      <tr>
+        <td><strong>G30 奎屯-赛湖段</strong></td><td>D7/D8</td><td>🟢 低</td><td>戈壁段枯燥、横风</td><td>—</td>
+      </tr>
+      <tr>
+        <td><strong>G0711乌尉高速</strong></td><td>D3</td><td>🟢 低</td><td>2026新路，服务区可能未完善</td><td>—</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <!-- 费用 -->
 <div class="card">
   <h2>💰 费用明细（人均）</h2>
   <div class="cost-grid">
-    <div class="cost-item"><div class="cost-num">¥2,500</div><div class="cost-label">✈️ 杭州↔新疆机票</div></div>
-    <div class="cost-item"><div class="cost-num">¥120</div><div class="cost-label">🚂 乌市↔奎屯往返</div></div>
-    <div class="cost-item"><div class="cost-num">¥475</div><div class="cost-label">🚙 租车（2+9天）</div></div>
-    <div class="cost-item"><div class="cost-num">¥300</div><div class="cost-label">⛽ 油费+过路费</div></div>
-    <div class="cost-item"><div class="cost-num">¥1,100</div><div class="cost-label">🏨 住宿 11晚 2间</div></div>
-    <div class="cost-item"><div class="cost-num">¥850</div><div class="cost-label">🍜 餐饮 9天 9天</div></div>
-    <div class="cost-item"><div class="cost-num">¥550</div><div class="cost-label">🎫 门票</div></div>
+    <div class="cost-item"><div class="cost-num">¥2,500</div><div class="cost-label">✈️ 杭州↔乌市</div></div>
+    <div class="cost-item"><div class="cost-num">¥40</div><div class="cost-label">🚂 2人奎屯往返</div></div>
+    <div class="cost-item"><div class="cost-num">¥290</div><div class="cost-label">🚙 租车 7天</div></div>
+    <div class="cost-item"><div class="cost-num">¥330</div><div class="cost-label">⛽ 油费</div></div>
+    <div class="cost-item"><div class="cost-num">¥120</div><div class="cost-label">🛣️ 过路费</div></div>
+    <div class="cost-item"><div class="cost-num">¥880</div><div class="cost-label">🏨 住宿 7晚</div></div>
+    <div class="cost-item"><div class="cost-num">¥580</div><div class="cost-label">🍜 餐饮 8天</div></div>
+    <div class="cost-item"><div class="cost-num">¥500</div><div class="cost-label">🎫 门票</div></div>
     <div class="cost-item"><div class="cost-num">¥300</div><div class="cost-label">🧾 杂费</div></div>
   </div>
-  <div class="total-bar"><div class="small">人均预估</div><div class="big">¥5,450</div><div class="small">9天压缩版 · 奎屯租车便宜 · 提前订机票可压到5,000</div></div>
+  <div class="total-bar"><div class="small">人均预估</div><div class="big">¥5,540</div><div class="small">奎屯租车省 ~30% · 提前订机票可压到5,200</div></div>
 </div>
 
 <!-- 门票 -->
@@ -421,17 +469,16 @@
     <thead><tr><th>景点</th><th class="num">成人</th><th class="num">儿童</th><th>类型</th></tr></thead>
     <tbody>
       <tr><td>坎儿井</td><td class="num">40</td><td class="num">20</td><td>人文</td></tr>
-      <tr><td><strong>🍇 葡萄沟</strong></td><td class="num"><strong>75</strong></td><td class="num"><strong>37</strong></td><td>绿洲果园</td></tr>
-      <tr><td>火焰山</td><td class="num">40</td><td class="num">20</td><td>地质</td></tr>
-      <tr><td>赛里木湖</td><td class="num">145</td><td class="num">72</td><td>🌊 湖泊</td></tr>
-      <tr><td>夏塔古道</td><td class="num">40</td><td class="num">20</td><td>🏔️ 雪山</td></tr>
-      <tr><td>喀拉峻草原</td><td class="num">140</td><td class="num">70</td><td>🌿 草原（唯一）</td></tr>
-      <tr><td>库尔德宁</td><td class="num">60</td><td class="num">30</td><td>🌲 森林</td></tr>
-      <tr style="font-weight:700;border-top:2px solid var(--border);"><td>成人合计</td><td class="num">540</td><td></td><td></td></tr>
-      <tr style="font-weight:700;"><td>6人均摊</td><td class="num" colspan="2">约 450</td><td>儿童半价拉低</td></tr>
+      <tr><td><strong>🍇 葡萄沟（必去）</strong></td><td class="num"><strong>75</strong></td><td class="num"><strong>37</strong></td><td>绿洲果园</td></tr>
+      <tr><td>火焰山</td><td class="num">40</td><td class="num">20</td><td>地质打卡</td></tr>
+      <tr><td>🏔️ 夏塔古道</td><td class="num">40</td><td class="num">20</td><td>雪山冰川</td></tr>
+      <tr><td>🌿 喀拉峻草原</td><td class="num">140</td><td class="num">70</td><td>立体草原·唯一</td></tr>
+      <tr><td>🌊 赛里木湖</td><td class="num">145</td><td class="num">72</td><td>高原湖泊</td></tr>
+      <tr style="border-top:2px solid var(--border);"><td><strong>成人合计</strong></td><td class="num"><strong>480</strong></td><td></td><td></td></tr>
+      <tr><td><strong>6人均摊</strong></td><td class="num" colspan="2"><strong>约 400</strong></td><td>儿童半价</td></tr>
     </tbody>
   </table>
-  <p style="font-size:0.8em;color:var(--text2);margin-top:8px;">门票成人仅540元，比原方案（1,050元）少了一半——景点更精不在多。</p>
+  <p style="font-size:0.8em;color:var(--text2);margin-top:8px;">巩乃斯林场、艾肯达坂、果子沟大桥、喀赞其、八卦城、天山胜利隧道均<strong>免费</strong>。喀拉峻+夏塔门票已含区间车。</p>
 </div>
 
 <!-- 住宿 -->
@@ -440,18 +487,14 @@
   <table>
     <thead><tr><th>日期</th><th>城市</th><th class="num">单价/间</th><th class="num">小计</th><th>备注</th></tr></thead>
     <tbody>
-      <tr><td>7.11</td><td>乌鲁木齐</td><td class="num">280</td><td class="num">560</td><td>机场附近</td></tr>
+      <tr><td>7.11</td><td>乌鲁木齐</td><td class="num">280</td><td class="num">560</td><td>大部队休整</td></tr>
       <tr><td>7.12</td><td>吐鲁番</td><td class="num">250</td><td class="num">500</td><td></td></tr>
-      <tr><td>7.13</td><td>奎屯</td><td class="num">220</td><td class="num">440</td><td>小城市实惠</td></tr>
-      <tr><td>7.14</td><td>赛湖/果子沟</td><td class="num">300</td><td class="num">600</td><td>蒙古包体验</td></tr>
-      <tr><td>7.15</td><td>伊宁</td><td class="num">280</td><td class="num">560</td><td></td></tr>
-      <tr><td>7.16</td><td>伊宁</td><td class="num">280</td><td class="num">560</td><td>不换酒店</td></tr>
-      <tr><td>7.17</td><td>昭苏</td><td class="num">280</td><td class="num">560</td><td></td></tr>
-      <tr><td>7.18</td><td>特克斯</td><td class="num">300</td><td class="num">600</td><td></td></tr>
-      <tr><td>7.19</td><td>特克斯</td><td class="num">300</td><td class="num">600</td><td>不换酒店</td></tr>
-      <tr><td>7.20</td><td>库尔德宁/巩留</td><td class="num">260</td><td class="num">520</td><td>小镇实惠</td></tr>
-      <tr><td>7.21</td><td>乌鲁木齐</td><td class="num">280</td><td class="num">560</td><td>火车回乌市住</td></tr>
-      <tr style="font-weight:700;border-top:2px solid var(--border);"><td colspan="2">合计 8晚</td><td class="num">均283</td><td class="num">4,520</td><td>人均753</td></tr>
+      <tr><td>7.13</td><td>巴伦台/和静</td><td class="num">220</td><td class="num">440</td><td>⚠️ 少，提前订</td></tr>
+      <tr><td>7.14</td><td>那拉提镇</td><td class="num">350</td><td class="num">700</td><td>旺季紧张</td></tr>
+      <tr><td>7.15</td><td>特克斯</td><td class="num">300</td><td class="num">600</td><td>八卦城内</td></tr>
+      <tr><td>7.16</td><td>伊宁</td><td class="num">280</td><td class="num">560</td><td></td></tr>
+      <tr><td>7.17</td><td>赛湖/果子沟</td><td class="num">300</td><td class="num">600</td><td>蒙古包体验</td></tr>
+      <tr style="font-weight:700;border-top:2px solid var(--border);"><td colspan="2">合计 7晚</td><td class="num">均283</td><td class="num">3,960</td><td>人均660</td></tr>
     </tbody>
   </table>
 </div>
@@ -460,12 +503,10 @@
 <div class="card">
   <h2>🍽️ 美食地图</h2>
   <div class="food-grid">
-    <div class="food-item"><div class="food-city">乌鲁木齐</div><div class="food-dish">烤包子、抓饭、大盘鸡、炒米粉</div><div class="food-price">领馆巷 · 楼兰秘烤 · 人均40-60</div></div>
+    <div class="food-item"><div class="food-city">乌鲁木齐</div><div class="food-dish">烤包子、抓饭、大盘鸡、炒米粉</div><div class="food-price">领馆巷·楼兰秘烤 · 人均40-60</div></div>
     <div class="food-item"><div class="food-city">🍇 吐鲁番</div><div class="food-dish">鲜榨葡萄汁、葡萄干抓饭、羊肉焖饼</div><div class="food-price">葡萄沟农家乐 · 人均40-50</div></div>
-    <div class="food-item"><div class="food-city">伊宁</div><div class="food-dish">手工冰淇淋（5元！）、面肺子、熏马肉</div><div class="food-price">汉人街 · 喀赞其 · 六星街 · 人均30-50</div></div>
-    <div class="food-item"><div class="food-city">昭苏</div><div class="food-dish">马肉纳仁、哈萨克奶茶、包尔萨克</div><div class="food-price">县城餐馆 · 人均30-40</div></div>
+    <div class="food-item"><div class="food-city">伊宁</div><div class="food-dish">手工冰淇淋（5元！）、面肺子、熏马肉</div><div class="food-price">汉人街·喀赞其·六星街 · 人均30-50</div></div>
     <div class="food-item"><div class="food-city">特克斯</div><div class="food-dish">烤全羊、手抓羊肉、野蘑菇拌面</div><div class="food-price">八卦城夜市 · 人均40-50</div></div>
-    
     <div class="food-item"><div class="food-city">那拉提</div><div class="food-dish">马肉纳仁、土火锅、现酿酸奶</div><div class="food-price">镇上餐馆 · 人均40-50</div></div>
     <div class="food-item"><div class="food-city">赛里木湖</div><div class="food-dish">高白鲑（冷水鱼）、清炖羊肉</div><div class="food-price">景区餐厅 · 人均60-80</div></div>
   </div>
@@ -475,21 +516,21 @@
 <div class="warn">
   <h3>⚠️ 重要提醒</h3>
   <div class="warn-grid">
-    <div><strong>🌡️ 温差大</strong> 吐鲁番40°C+ vs 夏塔/赛湖早晚10°C，带夏装+冲锋衣+薄羽绒</div>
+    <div><strong>🌡️ 温差极大</strong> 吐鲁番40°C+ vs 赛湖/艾肯达坂10°C，夏装+冲锋衣+薄羽绒必备</div>
     <div><strong>🕐 时差</strong> 新疆22:00才天黑，每天可玩到很晚</div>
-    <div><strong>🏨 提前订</strong> 赛里木湖、那拉提镇7月房间紧张，现在就订</div>
-    <div><strong>🛣️ 伊昭公路</strong> 7月正常开放，如封路改走G577</div>
-    <div><strong>🚗 两次租车</strong> 乌市2天+伊宁8天，分开租比异地还车便宜</div>
-    <div><strong>🚂 高铁票</strong> 乌市→伊宁C字头，提前3天买，每天多趟</div>
-    <div><strong>📱 信号</strong> 夏塔、独库部分路段无信号，下载离线地图</div>
-    <div><strong>🆔 证件</strong> 沿途检查站多，所有人带身份证原件，孩子带户口本</div>
-    <div><strong>💊 药品</strong> 藿香正气水、晕车药（伊昭公路弯多）、肠胃药</div>
+    <div><strong>🏨 提前订</strong> 巴伦台（极少）、那拉提（极紧张）、赛湖蒙古包，现在锁</div>
+    <div><strong>⚠️ 伊昭公路</strong> 全程最难。雨天禁行！出发前查"伊犁交警"公众号。备选G577</div>
+    <div><strong>⛽ 加油策略</strong> D3吐鲁番出来加满、D4那拉提加满、D6伊宁加满。不赌半路加油站</div>
+    <div><strong>🚇 G0711乌尉高速</strong> 2026年新路，服务区可能未全开，D3备干粮和水</div>
+    <div><strong>📱 离线地图</strong> 巩乃斯、伊昭、夏塔均无信号，务必提前下载</div>
+    <div><strong>🆔 证件</strong> 全程检查站多，所有人带身份证，孩子带户口本</div>
+    <div><strong>💊 药品</strong> 藿香正气水（吐鲁番）、晕车药（伊昭公路弯多）、肠胃药、葡萄糖（达坂）</div>
     <div><strong>🧴 防晒</strong> 新疆紫外线极强，SPF50+防晒霜+帽子+墨镜</div>
   </div>
 </div>
 
 <p style="text-align:center;color:var(--text2);margin:30px 0 10px;font-size:0.82em;">
-  📍 杭州出发 · 奎屯枢纽 · 9天精华 · ⭐独库北段 · 🍇 葡萄沟必去 · 人均≈5.5K
+  📍 杭州出发 · 逆时针环线 · 8天2,120km · 仅1草原 · 🍇葡萄沟 · 🚇胜利隧道 · 人均≈5.5K
 </p>
 
 </div>
@@ -497,74 +538,85 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (function(){
-  var map = L.map('route-map', { attributionControl: false }).setView([43.5, 83.5], 7);
-
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 13
-  }).addTo(map);
-
+  var map = L.map('route-map', { attributionControl: false }).setView([43.5, 84], 7);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 13 }).addTo(map);
   L.control.attribution({ position: 'bottomright' }).setPrefix('').addTo(map);
 
   var planeIcon  = L.divIcon({ className: '', html: '<div style="background:#f87171;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;">✈</div>', iconSize: [24,24], iconAnchor: [12,12] });
-  var trainIcon  = L.divIcon({ className: '', html: '<div style="background:#c084fc;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;">🚂</div>', iconSize: [24,24], iconAnchor: [12,12] });
   var grapeIcon  = L.divIcon({ className: '', html: '<div style="background:#f97316;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:16px;">🍇</div>', iconSize: [28,28], iconAnchor: [14,14] });
   var starIcon   = L.divIcon({ className: '', html: '<div style="background:#38bdf8;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:13px;">⭐</div>', iconSize: [22,22], iconAnchor: [11,11] });
   var lakeIcon   = L.divIcon({ className: '', html: '<div style="background:#06b6d4;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:13px;">🌊</div>', iconSize: [22,22], iconAnchor: [11,11] });
   var mountIcon  = L.divIcon({ className: '', html: '<div style="background:#a78bfa;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:13px;">🏔</div>', iconSize: [22,22], iconAnchor: [11,11] });
   var forestIcon = L.divIcon({ className: '', html: '<div style="background:#22c55e;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:13px;">🌲</div>', iconSize: [22,22], iconAnchor: [11,11] });
+  var tunnelIcon = L.divIcon({ className: '', html: '<div style="background:#facc15;color:#000;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:14px;">🚇</div>', iconSize: [24,24], iconAnchor: [12,12] });
+  var trainIcon  = L.divIcon({ className: '', html: '<div style="background:#c084fc;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;">🚂</div>', iconSize: [22,22], iconAnchor: [11,11] });
+  var roadIcon   = L.divIcon({ className: '', html: '<div style="background:#f87171;color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;">⚠️</div>', iconSize: [20,20], iconAnchor: [10,10] });
   var numIcon = function(n){
     return L.divIcon({ className: '', html: '<div style="background:#4ade80;color:#000;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">'+n+'</div>', iconSize: [20,20], iconAnchor: [10,10] });
   };
 
-  // Points along the route
   var pts = [
     { lat: 30.25, lng: 120.23, label: '杭州 ✈️', icon: planeIcon },
-    { lat: 43.83, lng: 87.62, label: '乌鲁木齐 ①', icon: numIcon(1) },
-    { lat: 42.95, lng: 89.19, label: '🍇 葡萄沟', icon: grapeIcon },
-    { lat: 43.83, lng: 87.62, label: '乌市 🚂→奎屯', icon: trainIcon },
-    { lat: 44.42, lng: 84.90, label: '奎屯 取车', icon: numIcon(2) },
-    { lat: 44.60, lng: 81.15, label: '🌊 赛里木湖', icon: lakeIcon },
-    { lat: 43.92, lng: 81.32, label: '伊宁', icon: numIcon(3) },
-    { lat: 43.16, lng: 81.13, label: '昭苏', icon: numIcon(4) },
-    { lat: 42.82, lng: 80.55, label: '🏔️ 夏塔', icon: mountIcon },
-    { lat: 43.22, lng: 81.83, label: '特克斯·八卦城', icon: numIcon(5) },
+    { lat: 43.83, lng: 87.62, label: '乌市 ①', icon: numIcon(1) },
+    { lat: 44.42, lng: 84.90, label: '奎屯 🚂取车', icon: trainIcon },
+    { lat: 43.83, lng: 87.62, label: '乌市会合', icon: numIcon(2) },
+    { lat: 42.95, lng: 89.19, label: '🍇 葡萄沟 D2', icon: grapeIcon },
+    { lat: 43.83, lng: 87.62, label: '乌市 D3', icon: numIcon(3) },
+    { lat: 42.90, lng: 86.80, label: '🚇 胜利隧道', icon: tunnelIcon },
+    { lat: 42.78, lng: 86.30, label: '巴伦台', icon: numIcon(4) },
+    { lat: 43.20, lng: 84.50, label: '🌲 巩乃斯', icon: forestIcon },
+    { lat: 43.00, lng: 85.50, label: '🏔 艾肯达坂', icon: mountIcon },
+    { lat: 43.42, lng: 83.60, label: '那拉提 D5', icon: numIcon(5) },
     { lat: 43.15, lng: 81.93, label: '🌿 喀拉峻', icon: starIcon },
-    { lat: 43.42, lng: 83.60, label: '⭐ 独库北段', icon: starIcon },
-    { lat: 44.42, lng: 84.90, label: '奎屯 还车', icon: trainIcon },
-    { lat: 43.83, lng: 87.62, label: '乌市 ✈️ 杭州', icon: planeIcon }
+    { lat: 43.22, lng: 81.83, label: '特克斯', icon: numIcon(6) },
+    { lat: 42.82, lng: 80.55, label: '🏔 夏塔', icon: mountIcon },
+    { lat: 43.20, lng: 81.20, label: '⚠️ 伊昭公路', icon: roadIcon },
+    { lat: 43.92, lng: 81.32, label: '伊宁 D7', icon: numIcon(7) },
+    { lat: 44.60, lng: 81.15, label: '🌊 赛里木湖', icon: lakeIcon },
+    { lat: 44.42, lng: 84.90, label: '奎屯还车 D8', icon: trainIcon },
+    { lat: 43.83, lng: 87.62, label: '乌市 ✈️', icon: planeIcon }
   ];
 
-  pts.forEach(function(p, i) {
-    var marker = L.marker([p.lat, p.lng], { icon: p.icon }).addTo(map);
-    marker.bindTooltip(L.tooltip({ permanent: true, direction: 'top', offset: [0, -8], className: 'map-label' })
+  var labelOff = {};
+  pts.forEach(function(p) {
+    var key = p.lat.toFixed(2) + ',' + p.lng.toFixed(2);
+    labelOff[key] = (labelOff[key] || 0) + 1;
+    var off = (labelOff[key] - 1) * 20;
+    var m = L.marker([p.lat, p.lng], { icon: p.icon }).addTo(map);
+    m.bindTooltip(L.tooltip({ permanent: true, direction: 'top', offset: [0, -8-off], className: 'map-label' })
       .setContent('<span style="font-size:12px;font-weight:600;text-shadow:0 0 6px #000;">'+p.label+'</span>'));
   });
 
-  // Drive routes (green)
-  var drives = [
-    [[43.83,87.62],[42.95,89.19]], // Urumqi -> Turpan
-    [[42.95,89.19],[43.83,87.62]], // Turpan -> Urumqi
-    [[44.42,84.90],[44.60,81.15]], // Kuitun -> Sayram
-    [[44.60,81.15],[43.92,81.32]], // Sayram -> Yining
-    [[43.92,81.32],[43.16,81.13]], // Yining -> Zhaosu
-    [[43.16,81.13],[42.82,80.55]], // Zhaosu -> Xiata
-    [[42.82,80.55],[43.22,81.83]], // Xiata -> Tekesi
-    [[43.22,81.83],[43.15,81.93]], // Tekesi -> Kalajun
-    [[43.15,81.93],[43.42,83.60],[44.42,84.90]], // Kalajun -> Nalati -> Duku -> Kuitun
+  // Drive loop
+  var loop = [
+    [43.83,87.62], [44.42,84.90], // Urumqi -> Kuitun (pickup only, D1)
+    [44.42,84.90], [43.83,87.62], // Kuitun -> Urumqi (return, D1)
+    [43.83,87.62], [42.95,89.19], // Urumqi -> Turpan D2
+    [42.95,89.19], [43.83,87.62], // Turpan -> Urumqi D3
+    [43.83,87.62], [42.90,86.80], [42.78,86.30], // Urumqi -> Tunnel -> Baluntai D3
+    [42.78,86.30], [43.20,84.50], [43.00,85.50], [43.42,83.60], // Baluntai -> Gongnaisi -> Daban -> Nalati D4
+    [43.42,83.60], [43.15,81.93], [43.22,81.83], // Nalati -> Kalajun -> Tekesi D5
+    [43.22,81.83], [42.82,80.55], [43.20,81.20], [43.92,81.32], // Tekesi -> Xiata -> Yizhao -> Yining D6
+    [43.92,81.32], [44.60,81.15], // Yining -> Sayram D7
+    [44.60,81.15], [44.42,84.90], // Sayram -> Kuitun D8
   ];
-  drives.forEach(function(seg){
-    L.polyline(seg, { color: '#4ade80', weight: 3, opacity: 0.8 }).addTo(map);
+
+  loop.forEach(function(seg) {
+    L.polyline([seg[0], seg[1]], { color: '#4ade80', weight: 3, opacity: 0.75 }).addTo(map);
   });
 
-  // Train (purple dashed)
-  L.polyline([[43.83,87.62],[44.42,84.90]], { color: '#c084fc', weight: 3, opacity: 0.7, dashArray: '10 6' }).addTo(map);
-  L.polyline([[44.42,84.90],[43.83,87.62]], { color: '#c084fc', weight: 3, opacity: 0.7, dashArray: '10 6' }).addTo(map);
+  // Pickup shuttle (yellow dashed)
+  L.polyline([[43.83,87.62],[44.42,84.90]], { color: '#facc15', weight: 3, opacity: 0.5, dashArray: '10 8' }).addTo(map);
+  L.polyline([[44.42,84.90],[43.83,87.62]], { color: '#facc15', weight: 3, opacity: 0.5, dashArray: '10 8' }).addTo(map);
 
   // Flights (red dashed)
   L.polyline([[30.25,120.23],[43.83,87.62]], { color: '#f87171', weight: 2, opacity: 0.5, dashArray: '6 8' }).addTo(map);
   L.polyline([[43.83,87.62],[30.25,120.23]], { color: '#f87171', weight: 2, opacity: 0.5, dashArray: '6 8' }).addTo(map);
 
-  map.fitBounds([[42.3, 80.3], [45.2, 89.5]]);
+  // Tunnel segment (yellow)
+  L.polyline([[42.90,86.80],[42.78,86.30]], { color: '#facc15', weight: 4, opacity: 0.6 }).addTo(map);
+
+  map.fitBounds([[42.3, 80.0], [45.2, 89.5]]);
 })();
 </script>
 </body>
